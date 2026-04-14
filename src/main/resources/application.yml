@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: transporte-api
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/transport_db
+    username: postgres
+    password: admin
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+logging:
+  level:
+    root: INFO
+
+jwt:
+  secret: my-secret-key
+  expiration: 3600000
