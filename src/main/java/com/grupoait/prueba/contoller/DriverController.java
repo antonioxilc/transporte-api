@@ -1,13 +1,9 @@
 package com.grupoait.prueba.contoller;
 
-import com.grupoait.prueba.dto.DriverDTO;
-import com.grupoait.prueba.entity.Driver;
 import com.grupoait.prueba.mapper.DriverMapper;
 import com.grupoait.prueba.service.DriverService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/drivers")

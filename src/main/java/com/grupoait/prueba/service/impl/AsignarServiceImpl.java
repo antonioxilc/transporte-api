@@ -1,6 +1,6 @@
 package com.grupoait.prueba.service.impl;
 
-import com.grupoait.prueba.entity.Assignar;
+import com.grupoait.prueba.entity.Assignment;
 import com.grupoait.prueba.entity.Driver;
 import com.grupoait.prueba.entity.Order;
 import com.grupoait.prueba.entity.OrderStatus;
@@ -43,7 +43,7 @@ public class AsignarServiceImpl implements AsignarService {
             throw new RuntimeException("Order already assigned");
         }
 
-        Assignar assignment = new Assignar();
+        Assignment assignment = new Assignment();
         assignment.setOrder(order);
         assignment.setDriver(driver);
         assignment.setAssignedAt(LocalDateTime.now());

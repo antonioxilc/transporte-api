@@ -1,5 +1,4 @@
 package com.grupoait.prueba.entity;
-import com.grupoait.prueba.entity.Assignar;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -16,10 +15,11 @@ import java.util.UUID;
 public class Order {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status;
 
     @Column(nullable = false)
@@ -32,8 +32,8 @@ public class Order {
 
     private LocalDateTime updatedAt;
 
-    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
-    private Assignar assignment;
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Assignment assignment;
 
     @PrePersist
     public void prePersist() {

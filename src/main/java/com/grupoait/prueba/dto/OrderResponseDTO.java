@@ -1,14 +1,17 @@
 package com.grupoait.prueba.dto;
 
-import com.grupoait.prueba.entity.OrderStatus;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 public class OrderResponseDTO {
+
     private UUID id;
+    private String status;
     private String origin;
     private String destination;
-    private OrderStatus status;
+    private LocalDateTime localDateTime;
+    private LocalDateTime updateAT;
 }

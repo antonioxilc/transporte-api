@@ -10,16 +10,17 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-public class Assignar {
+@Table(name = "assignment")
+public class Assignment {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @OneToOne
-    @JoinColumn(name = "order_id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false, unique = true)
     private Order order;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "driver_id", nullable = false)
     private Driver driver;
 
@@ -27,4 +28,9 @@ public class Assignar {
     private String imagePath;
 
     private LocalDateTime assignedAt;
+
+    @PrePersist
+    public void prePersist() {
+        assignedAt = LocalDateTime.now();
+    }
 }
