@@ -25,6 +25,7 @@ public class Assignment {
     private Driver driver;
 
     private String documentPath;
+
     private String imagePath;
 
     private LocalDateTime assignedAt;

@@ -1,6 +1,6 @@
 package com.grupoait.prueba.contoller;
 
-import com.grupoait.prueba.service.AsignarService;
+import com.grupoait.prueba.service.AssignmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,7 +14,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AsignarController {
 
-    private final AsignarService assignmentService;
+    private final AssignmentService assignmentService;
 
     @PostMapping
     public String assignDriver(@RequestParam UUID orderId,

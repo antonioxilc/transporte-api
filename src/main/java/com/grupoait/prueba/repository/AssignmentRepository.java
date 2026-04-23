@@ -7,7 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AsignarRepository extends JpaRepository<Assignment, UUID> {
+public interface AssignmentRepository extends JpaRepository<Assignment, UUID> {
 
     Optional<Assignment> findByOrder(Order order);
+
+    boolean existsByOrderId(UUID orderId);
 }
