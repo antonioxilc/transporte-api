@@ -13,9 +13,16 @@ import com.grupoait.prueba.repository.DriverRepository;
 import com.grupoait.prueba.repository.OrderRepository;
 import com.grupoait.prueba.service.AssignmentService;
 
+import jakarta.transaction.TransactionScoped;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.UUID;
 
 @Service
@@ -27,9 +34,11 @@ public class AssignmentServiceImpl implements AssignmentService {
     private final DriverRepository driverRepository;
     private final AssignmentMapper assignmentMapper;
 
+    private static final String UPLOAD_DIR = "uploads/";
+
 
     @Override
-
+    @Transactional
     public AssignmentResponseDTO assign(AssignmentRequestDTO request) {
 
         // 1. Buscar Order
@@ -56,11 +65,17 @@ public class AssignmentServiceImpl implements AssignmentService {
             throw new ResourceNotFoundException("Order already assigned");
         }
 
+        // Guardar archivos
+        String documentPath = saveFile(request.getDocument());
+        String imagePath = saveFile(request.getImage());
+
         // 6. Crear Assignment
         Assignment assignment = new Assignment();
         assignment.setOrder(order);
         assignment.setDriver(driver);
 
+        assignment.setDocumentPath(documentPath);
+        assignment.setImagePath(imagePath);
 
         Assignment saved = assignmentRepository.save(assignment);
 
@@ -79,5 +94,32 @@ public class AssignmentServiceImpl implements AssignmentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Assignment not found"));
 
         return assignmentMapper.toDTO(assignment);
+    }
+    private String saveFile(MultipartFile file) {
+
+        if (file == null || file.isEmpty()) {
+            return null;
+        }
+
+        try {
+            Path uploadPath = Paths.get(UPLOAD_DIR);
+
+            // Crear carpeta si no existe
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
+            // Nombre único
+            String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+            Path filePath = uploadPath.resolve(fileName);
+
+            // Guardar archivo
+            Files.copy(file.getInputStream(), filePath);
+
+            return filePath.toString();
+
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving file", e);
+        }
     }
 }
