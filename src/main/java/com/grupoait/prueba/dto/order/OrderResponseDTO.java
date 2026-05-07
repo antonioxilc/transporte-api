@@ -1,5 +1,8 @@
-package com.grupoait.prueba.dto;
+package com.grupoait.prueba.dto.order;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.grupoait.prueba.dto.assignment.AssignmentResponseDTO;
+import com.grupoait.prueba.entity.OrderStatus;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -9,9 +12,13 @@ import java.util.UUID;
 public class OrderResponseDTO {
 
     private UUID id;
-    private String status;
+    private OrderStatus status;
     private String origin;
     private String destination;
-    private LocalDateTime localDateTime;
-    private LocalDateTime updateAT;
+
+    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
+    private LocalDateTime updatedAt;
 }

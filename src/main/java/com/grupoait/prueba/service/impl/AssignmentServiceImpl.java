@@ -6,6 +6,7 @@ import com.grupoait.prueba.entity.Assignment;
 import com.grupoait.prueba.entity.Driver;
 import com.grupoait.prueba.entity.Order;
 import com.grupoait.prueba.entity.OrderStatus;
+import com.grupoait.prueba.exception.ResourceNotFoundException;
 import com.grupoait.prueba.mapper.AssignmentMapper;
 import com.grupoait.prueba.repository.AssignmentRepository;
 import com.grupoait.prueba.repository.DriverRepository;
@@ -28,30 +29,31 @@ public class AssignmentServiceImpl implements AssignmentService {
 
 
     @Override
+
     public AssignmentResponseDTO assign(AssignmentRequestDTO request) {
 
         // 1. Buscar Order
-        Order order = orderRepository.findById(request.getOrdeId())
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+        Order order = orderRepository.findById(request.getOrderId())
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
         // 2. Validar estado
         if (!order.getStatus().equals(OrderStatus.CREATED)) {
-            throw new RuntimeException("El pedido debe estar en estado CREADO");
+            throw new ResourceNotFoundException("El pedido debe estar en estado CREADO");
         }
         // 3. Buscar Driver
         Driver driver = driverRepository.findById(request.getDriverId())
-                .orElseThrow(() -> new RuntimeException("Driver not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Driver not found"));
 
         // 4. Validar driver activo
         if (!driver.isActive()) {
-            throw new RuntimeException("Driver is not active");
+            throw new ResourceNotFoundException("Driver is not active");
         }
 
         // 5. Validar que no esté asignada
         boolean alreadyAssigned = assignmentRepository.existsByOrderId(order.getId());
 
         if (alreadyAssigned) {
-            throw new RuntimeException("Order already assigned");
+            throw new ResourceNotFoundException("Order already assigned");
         }
 
         // 6. Crear Assignment
@@ -59,9 +61,6 @@ public class AssignmentServiceImpl implements AssignmentService {
         assignment.setOrder(order);
         assignment.setDriver(driver);
 
-        // 🔥 (archivos se manejan después)
-        // assignment.setDocumentPath(...)
-        // assignment.setImagePath(...)
 
         Assignment saved = assignmentRepository.save(assignment);
 
@@ -77,7 +76,7 @@ public class AssignmentServiceImpl implements AssignmentService {
     @Override
     public AssignmentResponseDTO getById(UUID id) {
         Assignment assignment = assignmentRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Assignment not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Assignment not found"));
 
         return assignmentMapper.toDTO(assignment);
     }

@@ -8,7 +8,7 @@ import java.util.UUID;
 @Data
 public class AssignmentResponseDTO {
 
-    private UUID Id;
+    private UUID id;
 
     private UUID orderId;
 

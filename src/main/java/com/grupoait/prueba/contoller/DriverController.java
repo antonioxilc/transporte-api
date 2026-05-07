@@ -1,5 +1,7 @@
 package com.grupoait.prueba.contoller;
 
+import com.grupoait.prueba.dto.driver.DriverRequestDTO;
+import com.grupoait.prueba.dto.driver.DriverResponseDTO;
 import com.grupoait.prueba.mapper.DriverMapper;
 import com.grupoait.prueba.service.DriverService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +16,7 @@ public class DriverController {
     private final DriverMapper driverMapper;
 
     @PostMapping
-    public DriverDTO create(@RequestBody DriverDTO dto) {
+    public DriverResponseDTO create(@RequestBody DriverRequestDTO dto) {
         return driverMapper.toDTO(
                 driverService.createDriver(driverMapper.toEntity(dto))
         );

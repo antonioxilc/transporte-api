@@ -1,17 +1,20 @@
 package com.grupoait.prueba.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 
-@Table(name = "ordenes")
+@Entity
 @Getter
 @Setter
-@Entity
+@NoArgsConstructor
+@Table(name = "ordenes")
 public class Order {
 
     @Id
@@ -33,6 +36,7 @@ public class Order {
     private LocalDateTime updatedAt;
 
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Assignment assignment;
 
     @PrePersist

@@ -20,7 +20,7 @@ public class AsignarController {
     public String assignDriver(@RequestParam UUID orderId,
                                @RequestParam UUID driverId) {
 
-        assignmentService.asignarDriver(orderId, driverId);
+        //assignmentService.assign(orderId, driverId);
         return "La asignación se creo correctamente";
     }
 }

@@ -1,11 +1,12 @@
 package com.grupoait.prueba.contoller;
 
-import com.grupoait.prueba.dto.OrderRequestDTO;
-import com.grupoait.prueba.dto.OrderResponseDTO;
-import com.grupoait.prueba.entity.Order;
-import com.grupoait.prueba.mapper.OrderMapper;
+
+import com.grupoait.prueba.dto.order.OrderRequestDTO;
+import com.grupoait.prueba.dto.order.OrderResponseDTO;
 import com.grupoait.prueba.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,49 +18,26 @@ import java.util.UUID;
 public class OrderController {
 
     private final OrderService orderService;
-    private final OrderMapper orderMapper;
 
     @PostMapping
-    public OrderResponseDTO create(@RequestBody OrderRequestDTO dto) {
-
-        Order order = new Order();
-        order.setOrigin(dto.getOrigin());
-        order.setDestination(dto.getDestination());
-
-        Order saved = orderService.createOrder(order);
-
-        OrderResponseDTO response = new OrderResponseDTO();
-        response.setId(saved.getId());
-        response.setOrigin(saved.getOrigin());
-        response.setDestination(saved.getDestination());
-        response.setStatus(saved.getStatus());
-
-        return response;
+    public OrderResponseDTO createDriver(@Valid @RequestBody OrderRequestDTO dto) {
+        return orderService.createOrder(dto);
     }
+
     @GetMapping("/{id}")
     public OrderResponseDTO getById(@PathVariable UUID id) {
-
-        Order order = orderService.getOrderById(id);
-
-        OrderResponseDTO response = new OrderResponseDTO();
-        response.setId(order.getId());
-        response.setOrigin(order.getOrigin());
-        response.setDestination(order.getDestination());
-        response.setStatus(order.getStatus());
-
-        return response;
+        return orderService.getOrderById(id);
     }
 
     @GetMapping
     public List<OrderResponseDTO> getAll() {
-
-        return orderService.getOrders().stream().map(order -> {
-            OrderResponseDTO dto = new OrderResponseDTO();
-            dto.setId(order.getId());
-            dto.setOrigin(order.getOrigin());
-            dto.setDestination(order.getDestination());
-            dto.setStatus(order.getStatus());
-            return dto;
-        }).toList();
+        return orderService.getOrders();
     }
+
+    @GetMapping("/{id}/status")
+    public OrderResponseDTO updateStatus(@PathVariable UUID id, @RequestParam String status) {
+    return orderService.updateStatus(id, status);
+    }
+
+
 }

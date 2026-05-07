@@ -10,6 +10,7 @@ public interface AssignmentMapper {
 
     @Mapping(source = "order.id", target = "orderId")
     @Mapping(source = "driver.id", target = "driverId")
+    @Mapping(source = "driver.name", target = "driverName")
     AssignmentResponseDTO toDTO(Assignment assignment);
 
 

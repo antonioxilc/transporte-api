@@ -1,10 +1,15 @@
 package com.grupoait.prueba.service.impl;
 
+import com.grupoait.prueba.dto.order.OrderRequestDTO;
+import com.grupoait.prueba.dto.order.OrderResponseDTO;
 import com.grupoait.prueba.entity.Order;
 import com.grupoait.prueba.entity.OrderStatus;
+import com.grupoait.prueba.exception.ResourceNotFoundException;
+import com.grupoait.prueba.mapper.OrderMapper;
 import com.grupoait.prueba.repository.OrderRepository;
 import com.grupoait.prueba.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import com.grupoait.prueba.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,36 +18,48 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class OrderServiceImp implements OrderService {
+
     private final OrderRepository orderRepository;
+    private final OrderMapper orderMapper;
 
     @Override
-    public Order createOrder(Order order) {
+    public OrderResponseDTO createOrder(OrderRequestDTO request) {
+        Order order = orderMapper.toEntity(request);
         order.setStatus(OrderStatus.CREATED);
-        return orderRepository.save(order);
+
+        Order saved = orderRepository.save(order);
+        return orderMapper.toDTO(saved);
     }
 
     @Override
-    public Order getOrderById(UUID id) {
-        return orderRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Order not found"));
+    public OrderResponseDTO getOrderById(UUID id) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+
+        return orderMapper.toDTO(order);
     }
 
     @Override
-    public List<Order> getOrders() {
-        return orderRepository.findAll();
+    public List<OrderResponseDTO> getOrders() {
+        return orderRepository.findAll()
+                .stream()
+                .map(orderMapper::toDTO)
+                .toList();
     }
 
     @Override
-    public Order updateStatus(UUID orderId, OrderStatus newStatus) {
+    public OrderResponseDTO updateStatus(UUID orderId, String status) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
 
-        Order order = getOrderById(orderId);
-
+        OrderStatus newStatus = OrderStatus.valueOf(status);
         validateStatusTransition(order.getStatus(), newStatus);
 
         order.setStatus(newStatus);
-        return orderRepository.save(order);
-    }
+        Order updated = orderRepository.save(order);
 
+        return orderMapper.toDTO(updated);
+    }
     private void validateStatusTransition(OrderStatus current, OrderStatus next) {
 
         if (current == OrderStatus.CREATED &&
@@ -55,6 +72,6 @@ public class OrderServiceImp implements OrderService {
             return;
         }
 
-        throw new RuntimeException("Invalid status transition");
+        throw new BadRequestException("Invalid status transition");
     }
 }

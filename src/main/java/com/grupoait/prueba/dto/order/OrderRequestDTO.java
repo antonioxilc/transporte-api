@@ -1,13 +1,15 @@
-package com.grupoait.prueba.dto;
+package com.grupoait.prueba.dto.order;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
 @Data
+
 public class OrderRequestDTO {
 
-    @NotBlank
+    @NotBlank (message = "El Origen es obligatorio")
     private String origin;
-    @NotBlank
+
+    @NotBlank(message = "El destino es obligatorio")
     private String destination;
 }
